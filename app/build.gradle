@@ -1,0 +1,166 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    namespace 'com.example.myapplication'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    configurations.all {
+        c -> c.resolutionStrategy.eachDependency {
+            DependencyResolveDetails dependency ->
+                println dependency.requested.group
+                if (dependency.requested.group == 'org.bouncycastle') {
+                    dependency.useTarget 'org.bouncycastle:bcprov-jdk15to18:1.68'
+                }
+        }
+    }
+
+    signingConfigs {
+        staging {
+            storeFile file('unitea_second_cert')
+            storePassword 'unitea_second_cert'
+            keyAlias 'unitea_second_cert'
+            keyPassword 'unitea_second_cert'
+        }
+        release {
+            storeFile file('unitea_playstore')
+            storePassword 'un1t3a_'
+            keyAlias 'unitea'
+            keyPassword 'un1t3a_'
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "API_URL", '"https://api-dev.unitea.com/api/"'
+            buildConfigField "String", "API_URL_UNITY", '"https://api-dev.unitea.com/"'
+            buildConfigField "String", "WEBVIEW_URL", '"https://cms-dev.unitea.com/"'
+            buildConfigField "String", "SPOTIFY_AUTH_URL", '"https://accounts.spotify.com"'
+            buildConfigField "String", "SPOTIFY_URL", '"https://api.spotify.com"'
+            buildConfigField "String", "IMAGES_URL", '"https://gevzm9pq3h.execute-api.us-east-1.amazonaws.com/dev/images/"'
+            buildConfigField "String", "PUBNUB_SUBSCRIBE_KEY", '"sub-c-e212094e-db1f-11e9-85e7-eae1db32c94a"'
+            buildConfigField "String", "PUBNUB_PUBLISH_KEY", '"pub-c-cec15264-ed2b-4ed3-b0ab-fa853558201d"'
+            buildConfigField "String", "PLACES_API_KEY", '"AIzaSyA82eK01jyLBgpIqyWjSj-2Ffx6idSC5oI"'
+            buildConfigField "String", "STRIPE_PUBLISHABLE_KEY", '"pk_test_51MilzNDUjg3W8m0GU4tMH5h74i0sze44dVYaPvFo4uyztdhSI0yYKb1mMaiEB86VOpyAMvNGHgOJzCMYTQKUA6ZF00wUruxQhd"'
+            signingConfig signingConfigs.release
+            debuggable true
+        }
+        staging {
+            buildConfigField "String", "API_URL", '"https://api-stg.unitea.com/api/"'
+            buildConfigField "String", "API_URL_UNITY", '"https://api-stg.unitea.com/"'
+            buildConfigField "String", "WEBVIEW_URL", '"https://cms-stg.unitea.com/"'
+            buildConfigField "String", "SPOTIFY_AUTH_URL", '"https://accounts.spotify.com"'
+            buildConfigField "String", "SPOTIFY_URL", '"https://api.spotify.com"'
+            buildConfigField "String", "IMAGES_URL", '"https://gevzm9pq3h.execute-api.us-east-1.amazonaws.com/dev/images/"'
+            buildConfigField "String", "PUBNUB_SUBSCRIBE_KEY", '"sub-c-b79612dc-f442-11e9-ad72-8e6732c0d56b"'
+            buildConfigField "String", "PUBNUB_PUBLISH_KEY", '"pub-c-111d0be1-ad3c-4ac5-bc9e-241da56b570d"'
+            buildConfigField "String", "PLACES_API_KEY", '"AIzaSyA82eK01jyLBgpIqyWjSj-2Ffx6idSC5oI"'
+            buildConfigField "String", "STRIPE_PUBLISHABLE_KEY", '"pk_test_51MilzNDUjg3W8m0GU4tMH5h74i0sze44dVYaPvFo4uyztdhSI0yYKb1mMaiEB86VOpyAMvNGHgOJzCMYTQKUA6ZF00wUruxQhd"'
+            signingConfig signingConfigs.release
+            debuggable true
+        }
+        release {
+            buildConfigField "String", "API_URL", '"https://api-node.unitea.com/api/"'
+            buildConfigField "String", "API_URL_UNITY", '"https://api-node.unitea.com/"'
+            buildConfigField "String", "WEBVIEW_URL", '"https://cms.unitea.com/"'
+            buildConfigField "String", "SPOTIFY_AUTH_URL", '"https://accounts.spotify.com"'
+            buildConfigField "String", "SPOTIFY_URL", '"https://api.spotify.com/v1/"'
+            buildConfigField "String", "IMAGES_URL", '"https://gevzm9pq3h.execute-api.us-east-1.amazonaws.com/dev/images/"'
+            buildConfigField "String", "PUBNUB_SUBSCRIBE_KEY", '"sub-c-d157a7c6-8d13-11e9-9769-e24cdeae5ee1"'
+            buildConfigField "String", "PUBNUB_PUBLISH_KEY", '"pub-c-451b06b8-cd12-4bef-8028-44b60968965a"'
+            buildConfigField "String", "PLACES_API_KEY", '"AIzaSyA82eK01jyLBgpIqyWjSj-2Ffx6idSC5oI"'
+            buildConfigField "String", "STRIPE_PUBLISHABLE_KEY", '"pk_live_51MilzNDUjg3W8m0GAZOtwScYfOnNtoGZKQH3Yc2e98G4Rzk7fbdny4BcnQSBsVkAROxCAzY6m5EfnMfEjbGXECiT001S1wTYYo"'
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = ["-Xskip-metadata-version-check", "-Xskip-jvm-ast-version-check", "-P", "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"]
+    }
+
+    buildFeatures {
+        compose true
+        buildConfig true
+        viewBinding true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.3.2'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.0'
+    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    implementation 'androidx.compose.runtime:runtime-livedata:1.4.1'
+    implementation 'androidx.navigation:navigation-compose:2.5.3'
+
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-android-compiler:2.44"
+
+    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
+
+    implementation 'com.google.accompanist:accompanist-pager:0.20.0'
+    implementation 'com.google.accompanist:accompanist-pager-indicators:0.20.0'
+
+    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
+    implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    implementation "com.github.skydoves:sandwich:1.2.4"
+
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+}
